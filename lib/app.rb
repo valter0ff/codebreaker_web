@@ -1,6 +1,7 @@
 class App
   include DatabaseLoader
   include RenderEngine
+  include GameHelper
 
   PATHES = {
     root: '/',
@@ -59,8 +60,8 @@ class App
   end
 
   def setup_user_params(game_instance)
-    name = setup_game_data { game_instance.setup_name(@request.params['player_name']) }
-    level = setup_game_data { game_instance.setup_difficulty(@request.params['level']) }
+    name = setup_player_name(game_instance, @request.params['player_name'])
+    level = setup_difficulty_level(game_instance, @request.params['level'])
     name && level
   end
 
@@ -117,13 +118,6 @@ class App
 
   def game
     @request.session[:game]
-  end
-
-  def setup_game_data
-    yield
-  rescue Codebreaker::ValidationError => e
-    helper.flash.error = e.message
-    false
   end
 
   def statistics
