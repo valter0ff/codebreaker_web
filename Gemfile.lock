@@ -1,3 +1,10 @@
+GIT
+  remote: https://valter0ff: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@github.com/valter0ff/codebreaker_gem.git
+  revision: 2294a5793b0c195da9975b532f08870aaa82d577
+  branch: feature/game
+  specs:
+    codebreaker (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -85,6 +92,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  codebreaker!
   fasterer (= 0.9.0)
   haml (= 5.2.1)
   i18n (= 1.8.10)
