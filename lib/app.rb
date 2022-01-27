@@ -1,4 +1,5 @@
 class App
+  include DatabaseLoader
   include RenderEngine
 
   PATHES = {
@@ -90,6 +91,7 @@ class App
 
     handle_guess
     set_status
+    save_game if helper.status == :won
     redirect(PAGES[:game])
   end
 
@@ -102,6 +104,10 @@ class App
     @request.session[:status] = if helper.player_guess == game.secret_code.join then :won
                                 elsif helper.attempts_left.zero? then :lose
                                 end
+  end
+
+  def save_game
+    store_to_file([game.player, Time.now])
   end
 
   def new_game
@@ -118,5 +124,9 @@ class App
   rescue Codebreaker::ValidationError => e
     helper.flash.error = e.message
     false
+  end
+
+  def statistics
+    Statistics.show
   end
 end
