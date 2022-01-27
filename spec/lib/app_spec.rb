@@ -57,6 +57,23 @@ RSpec.describe App do
       end
     end
 
+    context 'when path /statistics' do
+      let(:column_titles) do
+        [I18n.t('stats.name'),
+         I18n.t('stats.level'),
+         I18n.t('stats.attempts_left'),
+         I18n.t('stats.hints_left'),
+         I18n.t('stats.date')]
+      end
+
+      it 'returns statistics page' do
+        column_titles.each do |title|
+          get '/statistics'
+          expect(last_response.body).to include(title)
+        end
+      end
+    end
+
     context 'when path /rules' do
       it 'returns rules page' do
         get pathes[:rules]
@@ -211,10 +228,17 @@ RSpec.describe App do
     end
 
     context 'when player won' do
+      let(:file_path) { 'spec/fixtures/test.yml' }
+      let(:data) { YAML.load_stream(File.read(file_path)) }
+
       before do
+        stub_const('DatabaseLoader::DATA_FILE', file_path)
+        File.new(file_path, 'w')
         game.instance_variable_set(:@secret_code, secret_code)
         post pathes[:submit_answer], number: secret_code.join
       end
+
+      after { File.delete(file_path) }
 
       it 'store :won status to session' do
         expect(last_request.session[:status]).to eq(:won)
@@ -222,6 +246,10 @@ RSpec.describe App do
 
       it 'redirects to game_over page' do
         expect(last_response.status).to eq(redirect_status)
+      end
+
+      it 'store result of game to file' do
+        expect(data.flatten[0].name).to eq(game.player.name)
       end
     end
   end
