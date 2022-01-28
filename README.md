@@ -4,7 +4,7 @@
 
 ## Installation
 
-Clone repository to your local machine using [github docs] (https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+Clone repository to your local machine ([github docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository))
 ```
 git clone https://github.com/valter0ff/codebreaker_web.git
 ```
