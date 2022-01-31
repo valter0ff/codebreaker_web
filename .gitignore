@@ -6,5 +6,8 @@ coverage
 .idea
 .rspec_status
 /.yarn/*
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 yarn-error.log
 node_modules/
