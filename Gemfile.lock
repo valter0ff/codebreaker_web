@@ -1,6 +1,6 @@
 GIT
   remote: https://valter0ff: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@github.com/valter0ff/codebreaker_gem.git
-  revision: 2294a5793b0c195da9975b532f08870aaa82d577
+  revision: f8558dfd302b6e8a33dd740a6b5c5bfb1e605f1b
   branch: feature/game
   specs:
     codebreaker (0.1.0)
@@ -48,12 +48,12 @@ GEM
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
       rspec-mocks (~> 3.10.0)
-    rspec-core (3.10.1)
+    rspec-core (3.10.2)
       rspec-support (~> 3.10.0)
     rspec-expectations (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
-    rspec-mocks (3.10.2)
+    rspec-mocks (3.10.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.3)
