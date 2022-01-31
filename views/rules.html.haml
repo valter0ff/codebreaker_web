@@ -1,0 +1,7 @@
+%p.lead.text-white-70= I18n.t('base.rules')
+%hr.mb-4
+.row.text-white-70
+  - I18n.t('rules').each {|x| haml_tag :p, x }
+%hr.mb-4
+%a.btn.btn-primary.btn-lg{ href: '/', role: 'button' }
+  = I18n.t('buttons.home')

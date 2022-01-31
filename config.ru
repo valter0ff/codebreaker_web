@@ -7,7 +7,7 @@ use Rack::Session::Cookie, key: 'rack.session',
                            domain: ENV['DOMAIN'] || '127.0.0.1',
                            secret: ENV['SECRET'] || 'change_me'
 use Rack::Static, urls: ['/assets'], root: 'public'
-use Rack::Static, urls: %w[/bootstrap /jquery], root: 'node_modules'
+use Rack::Static, urls: %w[/bootstrap-v4-rtl /jquery], root: 'node_modules'
 use Rack::Flash, accessorize: %i[notice error]
 
 run App

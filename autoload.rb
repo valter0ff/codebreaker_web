@@ -9,4 +9,3 @@ require 'pry-byebug'
 require 'rack/session/cookie'
 require 'rack-flash'
 require_relative 'config/i18n_config'
-
