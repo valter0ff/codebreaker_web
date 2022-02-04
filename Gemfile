@@ -9,6 +9,7 @@ gem 'codebreaker',
     git: 'https://valter0ff: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@github.com/valter0ff/codebreaker_gem.git',
     branch: 'feature/game'
 gem 'fasterer', '0.9.0'
+gem 'ffaker', '~> 2.20.0'
 gem 'haml', '5.2.1'
 gem 'i18n', '1.8.10'
 gem 'pry-byebug', '3.9.0'

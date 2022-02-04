@@ -9,6 +9,7 @@ SimpleCov.start do
 end
 
 require_relative '../autoload'
+require 'ffaker'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

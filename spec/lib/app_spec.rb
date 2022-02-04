@@ -1,7 +1,7 @@
 RSpec.describe App do
   let(:app) { Rack::Builder.parse_file('config.ru').first }
   let(:game) { Codebreaker::Game.new }
-  let(:valid_name) { 'Heizenberg' }
+  let(:valid_name) { FFaker::Name.first_name }
   let(:valid_level) { Codebreaker::Player::DIFFICULTY_HASH.keys.first.to_s }
   let(:attempts_total) { Codebreaker::Player::DIFFICULTY_HASH[:easy][:attempts] }
 
@@ -45,11 +45,12 @@ RSpec.describe App do
 
     context 'when path not allowed' do
       let(:pathes) { ['/started', '/submit', '/super_path', '/win', '/lose'] }
+      let(:no_page_status) { 404 }
 
       it 'returns 404 status' do
         pathes.each do |path|
           get path
-          expect(last_response.status).to eq(404)
+          expect(last_response.status).to eq(no_page_status)
         end
       end
     end
@@ -67,7 +68,7 @@ RSpec.describe App do
     let(:player) { last_request.session[:game].player }
 
     context 'when player name is invalid' do
-      let(:wrong_name) { 'qq' }
+      let(:wrong_name) { FFaker::Name.first_name.slice(1,2) }
 
       before { post '/start', player_name: wrong_name, level: valid_level }
 
@@ -86,7 +87,7 @@ RSpec.describe App do
     end
 
     context 'when difficulty level is invalid' do
-      let(:wrong_level) { 'hello' }
+      let(:wrong_level) { FFaker::Lorem.word }
 
       before { post '/start', player_name: valid_name, level: wrong_level }
 
@@ -122,9 +123,9 @@ RSpec.describe App do
   end
 
   describe 'game process' do
-    let(:secret_code) { [1, 2, 3, 4] }
-    let(:wrong_guess) { '1121' }
-    let(:invalid_guess) { '99999' }
+    let(:secret_code) { Array.new(Codebreaker::Validations::CODE_SIZE) { rand(Codebreaker::Validations::MIN_DIGIT..Codebreaker::Validations::MAX_DIGIT) } }
+    let(:wrong_guess) { secret_code.map { |n| n < 6 ? n + 1 : n }.join }
+    let(:invalid_guess) { secret_code.join * rand(2..3) }
     let(:redirect_status) { 302 }
 
     before do
