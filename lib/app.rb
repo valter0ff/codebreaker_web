@@ -9,14 +9,14 @@ class App
     submit_answer: '/submit_answer',
     hint: '/hint',
     rules: '/rules'
-  }
+  }.freeze
   PAGES = {
     menu: '/menu',
     game: '/game',
     rules: '/rules',
     game_over: '/game_over',
-    error_404: '/404'
-  }
+    error404: '/404'
+  }.freeze
   ERROR_STATUS = 404
 
   attr_reader :helper
@@ -31,6 +31,12 @@ class App
   end
 
   def response
+    return load_path if PATHES.value?(@request.path)
+
+    render(PAGES[:error404], ERROR_STATUS)
+  end
+
+  def load_path
     case @request.path
     when *PATHES.values_at(:root, :game) then select_route
     when PATHES[:start] then start_game
@@ -38,7 +44,6 @@ class App
     when PATHES[:submit_answer] then submit_guess
     when PATHES[:hint] then take_hint
     when PATHES[:rules] then render(PAGES[:rules])
-    else render(PAGES[:error_404], ERROR_STATUS)
     end
   end
 

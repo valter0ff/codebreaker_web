@@ -3,12 +3,12 @@ RSpec.describe App do
   let(:game) { Codebreaker::Game.new }
   let(:valid_name) { FFaker::Name.first_name }
   let(:valid_level) { Codebreaker::Player::DIFFICULTY_HASH.keys.first.to_s }
-  let(:attempts_total) { Codebreaker::Player::DIFFICULTY_HASH[:easy][:attempts] }
-  let(:ok_status) { 200 }
   let(:pathes) { App::PATHES }
 
   describe 'common route rules' do
-    context 'when GET to /' do
+    context 'when GET to root page' do
+      let(:ok_status) { 200 }
+
       it 'returns OK status' do
         get pathes[:root]
         expect(last_response.status).to eq(ok_status)
@@ -23,7 +23,7 @@ RSpec.describe App do
         expect(last_response.body).to include(label)
       end
 
-      it 'redirects to / ' do
+      it 'redirects to root page' do
         get pathes[:hint]
         expect(last_response.location).to eq(pathes[:root])
       end
@@ -39,7 +39,7 @@ RSpec.describe App do
     end
 
     context 'when not POST request' do
-      it 'redirects to / ' do
+      it 'redirects to root page' do
         get pathes[:start]
         expect(last_response.location).to eq(pathes[:root])
       end
@@ -70,7 +70,7 @@ RSpec.describe App do
     let(:player) { last_request.session[:game].player }
 
     context 'when player name is invalid' do
-      let(:wrong_name) { FFaker::Name.first_name.slice(1,2) }
+      let(:wrong_name) { FFaker::Name.first_name.slice(1, 2) }
 
       before { post pathes[:start], player_name: wrong_name, level: valid_level }
 
@@ -125,7 +125,11 @@ RSpec.describe App do
   end
 
   describe 'game process' do
-    let(:secret_code) { Array.new(Codebreaker::Validations::CODE_SIZE) { rand(Codebreaker::Validations::MIN_DIGIT..Codebreaker::Validations::MAX_DIGIT) } }
+    let(:secret_code) do
+      Array.new(Codebreaker::Validations::CODE_SIZE) do
+        rand(Codebreaker::Validations::MIN_DIGIT..Codebreaker::Validations::MAX_DIGIT)
+      end
+    end
     let(:wrong_guess) { secret_code.map { |n| n < 6 ? n + 1 : n }.join }
     let(:invalid_guess) { secret_code.join * rand(2..3) }
     let(:redirect_status) { 302 }
@@ -188,6 +192,8 @@ RSpec.describe App do
     end
 
     context 'when player lose' do
+      let(:attempts_total) { Codebreaker::Player::DIFFICULTY_HASH[:easy][:attempts] }
+
       before do
         game.instance_variable_set(:@secret_code, secret_code)
         game.setup_user_guess(wrong_guess)
