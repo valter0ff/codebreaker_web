@@ -1,6 +1,24 @@
 class App
   include RenderEngine
 
+  PATHES = {
+    root: '/',
+    game: '/game',
+    start: '/start',
+    new_game: '/new_game',
+    submit_answer: '/submit_answer',
+    hint: '/hint',
+    rules: '/rules'
+  }
+  PAGES = {
+    menu: '/menu',
+    game: '/game',
+    rules: '/rules',
+    game_over: '/game_over',
+    error_404: '/404'
+  }
+  ERROR_STATUS = 404
+
   attr_reader :helper
 
   def self.call(env)
@@ -14,22 +32,22 @@ class App
 
   def response
     case @request.path
-    when '/', '/game' then select_route
-    when '/start' then start_game
-    when '/new_game' then new_game
-    when '/submit_answer' then submit_guess
-    when '/hint' then take_hint
-    when '/rules' then render('rules')
-    else render('404', 404)
+    when *PATHES.values_at(:root, :game) then select_route
+    when PATHES[:start] then start_game
+    when PATHES[:new_game] then new_game
+    when PATHES[:submit_answer] then submit_guess
+    when PATHES[:hint] then take_hint
+    when PATHES[:rules] then render(PAGES[:rules])
+    else render(PAGES[:error_404], ERROR_STATUS)
     end
   end
 
   def start_game
-    return redirect('/') unless @request.post?
+    return redirect(PATHES[:root]) unless @request.post?
 
     current_game = Codebreaker::Game.new
     current_game.create_game_params
-    return redirect('/') unless setup_user_params(current_game)
+    return redirect(PATHES[:root]) unless setup_user_params(current_game)
 
     setup_session(current_game)
   end
@@ -43,31 +61,31 @@ class App
   def setup_session(game_instance)
     @request.session[:game] = game_instance
     @request.session[:hints] = []
-    render('game')
+    render(PAGES[:game])
   end
 
   def take_hint
-    return redirect('/') unless game
+    return redirect(PATHES[:root]) unless game
 
     game_hint = game.give_hint
     game_hint ? helper.hints << game_hint : helper.flash.notice = I18n.t('flash.notice.no_hints')
-    redirect('/game')
+    redirect(PAGES[:game])
   end
 
   def select_route
-    return render('game_over') if helper.status
-    return render('game') if game
+    return render(PAGES[:game_over]) if helper.status
+    return render(PAGES[:game]) if game
 
-    render('menu')
+    render(PAGES[:menu])
   end
 
   def submit_guess
     guess = @request.params['number']
-    return redirect('/game') unless @request.post? && setup_game_data { game.setup_user_guess(guess) }
+    return redirect(PAGES[:game]) unless @request.post? && setup_game_data { game.setup_user_guess(guess) }
 
     handle_guess
     set_status
-    redirect('/game')
+    redirect(PAGES[:game])
   end
 
   def handle_guess
@@ -83,7 +101,7 @@ class App
 
   def new_game
     @request.session.clear
-    redirect('/')
+    redirect(PATHES[:root])
   end
 
   def game

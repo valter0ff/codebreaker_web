@@ -4,12 +4,14 @@ RSpec.describe App do
   let(:valid_name) { FFaker::Name.first_name }
   let(:valid_level) { Codebreaker::Player::DIFFICULTY_HASH.keys.first.to_s }
   let(:attempts_total) { Codebreaker::Player::DIFFICULTY_HASH[:easy][:attempts] }
+  let(:ok_status) { 200 }
+  let(:pathes) { App::PATHES }
 
   describe 'common route rules' do
     context 'when GET to /' do
       it 'returns OK status' do
-        get '/'
-        expect(last_response.status).to eq 200
+        get pathes[:root]
+        expect(last_response.status).to eq(ok_status)
       end
     end
 
@@ -17,13 +19,13 @@ RSpec.describe App do
       let(:label) { I18n.t('menu.player_name') }
 
       it 'renders "menu"' do
-        get '/game'
+        get pathes[:game]
         expect(last_response.body).to include(label)
       end
 
       it 'redirects to / ' do
-        get '/hint'
-        expect(last_response.location).to eq('/')
+        get pathes[:hint]
+        expect(last_response.location).to eq(pathes[:root])
       end
     end
 
@@ -31,21 +33,21 @@ RSpec.describe App do
       before { env 'rack.session', game: game }
 
       it 'clear session ' do
-        get '/new_game'
+        get pathes[:new_game]
         expect(last_request.session).to be_empty
       end
     end
 
     context 'when not POST request' do
       it 'redirects to / ' do
-        get '/start'
-        expect(last_response.location).to eq('/')
+        get pathes[:start]
+        expect(last_response.location).to eq(pathes[:root])
       end
     end
 
     context 'when path not allowed' do
-      let(:pathes) { ['/started', '/submit', '/super_path', '/win', '/lose'] }
-      let(:no_page_status) { 404 }
+      let(:pathes) { Array.new(5) { "/#{FFaker::Lorem.word}" } }
+      let(:no_page_status) { App::ERROR_STATUS }
 
       it 'returns 404 status' do
         pathes.each do |path|
@@ -57,7 +59,7 @@ RSpec.describe App do
 
     context 'when path /rules' do
       it 'returns rules page' do
-        get '/rules'
+        get pathes[:rules]
         expect(last_response.body).to include(I18n.t('rules').first)
       end
     end
@@ -70,10 +72,10 @@ RSpec.describe App do
     context 'when player name is invalid' do
       let(:wrong_name) { FFaker::Name.first_name.slice(1,2) }
 
-      before { post '/start', player_name: wrong_name, level: valid_level }
+      before { post pathes[:start], player_name: wrong_name, level: valid_level }
 
       it 'redirects to home page' do
-        expect(last_response.location).to eq('/')
+        expect(last_response.location).to eq(pathes[:root])
       end
 
       it 'sets specific error to flash hash' do
@@ -89,10 +91,10 @@ RSpec.describe App do
     context 'when difficulty level is invalid' do
       let(:wrong_level) { FFaker::Lorem.word }
 
-      before { post '/start', player_name: valid_name, level: wrong_level }
+      before { post pathes[:start], player_name: valid_name, level: wrong_level }
 
       it 'redirects to home page' do
-        expect(last_response.location).to eq('/')
+        expect(last_response.location).to eq(pathes[:root])
       end
 
       it 'sets specific error to flash hash' do
@@ -106,7 +108,7 @@ RSpec.describe App do
     end
 
     context 'when player name and level is correct' do
-      before { post '/start', player_name: valid_name, level: valid_level }
+      before { post pathes[:start], player_name: valid_name, level: valid_level }
 
       it 'creates game instanse and store it to session cookie' do
         expect(last_request.session[:game]).to be_a(Codebreaker::Game)
@@ -136,13 +138,13 @@ RSpec.describe App do
     end
 
     it 'displays current player name' do
-      get '/game'
+      get pathes[:game]
       expect(last_response.body).to include(valid_name)
     end
 
     context 'when press hint button' do
       it 'add  hint to hints hash in session' do
-        get '/hint'
+        get pathes[:hint]
         expect(last_request.session[:hints].size).to eq(1)
       end
     end
@@ -151,14 +153,14 @@ RSpec.describe App do
       before { 2.times { game.give_hint } }
 
       it 'show flash notice "no hints"' do
-        get '/hint'
+        get pathes[:hint]
         follow_redirect!
         expect(last_response.body).to include(I18n.t('flash.notice.no_hints'))
       end
     end
 
     context 'when guess format is invalid' do
-      before { post '/submit_answer', number: invalid_guess }
+      before { post pathes[:submit_answer], number: invalid_guess }
 
       it 'sets specific error to flash hash' do
         expect(last_request.env['x-rack.flash'].error).to eq(Codebreaker::Validations::GUESS_ERROR)
@@ -173,7 +175,7 @@ RSpec.describe App do
     context 'when guess format is valid' do
       before do
         game.instance_variable_set(:@secret_code, secret_code)
-        post '/submit_answer', number: wrong_guess
+        post pathes[:submit_answer], number: wrong_guess
       end
 
       it 'stores player`s input to session cookie' do
@@ -190,7 +192,7 @@ RSpec.describe App do
         game.instance_variable_set(:@secret_code, secret_code)
         game.setup_user_guess(wrong_guess)
         (attempts_total - 1).times { game.check_user_guess }
-        post '/submit_answer', number: wrong_guess
+        post pathes[:submit_answer], number: wrong_guess
       end
 
       it 'store :lose status to session' do
@@ -205,7 +207,7 @@ RSpec.describe App do
     context 'when player won' do
       before do
         game.instance_variable_set(:@secret_code, secret_code)
-        post '/submit_answer', number: secret_code.join
+        post pathes[:submit_answer], number: secret_code.join
       end
 
       it 'store :won status to session' do

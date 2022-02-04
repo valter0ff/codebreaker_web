@@ -23,7 +23,7 @@
         %strong= game.secret_code.join
     %img.img-fluid{alt: I18n.t('game_over.status', status: helper.status), src: "assets/images/#{helper.status}.gif"}
 %hr.mb-4
-%a.btn.btn-primary.btn-lg{href: "/new_game", role: "button"}
+%a.btn.btn-primary.btn-lg{href: App::PATHES[:new_game], role: "button"}
   = I18n.t('buttons.play_again')
-%a.btn.btn-success.btn-lg.float-right{href: "/statistics", role: "button"}
+%a.btn.btn-success.btn-lg.float-right{href: App::PATHES[:statistics], role: "button"}
   = I18n.t('buttons.statistics')

@@ -20,7 +20,7 @@
         = helper.hints_left
 %hr.mb-4/
 %strong.text-white-70= helper.flash.error
-%form{action: "/submit_answer", method: "post"}
+%form{action: App::PATHES[:submit_answer], method: "post"}
   .form-group
     %input.form-control.guess_input{autocomplete: "off", name: "number",
       pattern: "^[1-6]{4}$", placeholder: "#{ helper.player_guess || 1234}", required: ""}/
@@ -32,7 +32,7 @@
   %hr.mb-4
   .row
     .col
-      %a.btn.btn-warning.btn-lg.float-right{role: "button", href: '/hint'}
+      %a.btn.btn-warning.btn-lg.float-right{role: "button", href: App::PATHES[:hint]}
         #{helper.flash.notice || I18n.t('base.show_hint')}
     .col.text-center
       -helper.hints.each do |hint|
