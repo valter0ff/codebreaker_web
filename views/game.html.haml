@@ -23,12 +23,12 @@
 %form{action: "/submit_answer", method: "post"}
   .form-group
     %input.form-control.guess_input{autocomplete: "off", name: "number",
-      pattern: "^[1-6]{4}$", placeholder: "#{ helper.number || 1234}", required: ""}/
+      pattern: "^[1-6]{4}$", placeholder: "#{ helper.player_guess || 1234}", required: ""}/
   .form-group.guess_markers_list
     #guess_marker
     - 4.times do |i|
       %button.btn.marks{disabled: "disabled", type: "button",
-      class: "#{helper.button_class(helper.check[i])}"} #{helper.check[i] || 'X'}
+      class: "#{helper.button_class(helper.result_check[i])}"} #{helper.result_check[i] || 'X'}
   %hr.mb-4
   .row
     .col

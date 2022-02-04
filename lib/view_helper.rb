@@ -15,12 +15,12 @@ class ViewHelper
     @request.session[:hints] || []
   end
 
-  def check
-    @request.session[:check] || []
+  def result_check
+    @request.session[:result_check] || []
   end
 
-  def number
-    @request.session[:number]
+  def player_guess
+    @request.session[:player_guess]
   end
 
   def status
@@ -45,10 +45,8 @@ class ViewHelper
 
   def game_over_message
     case status
-    when :won
-      I18n.t('game_over.won', name: player.name)
-    when :lose
-      I18n.t('game_over.lose', name: player.name)
+    when :won then I18n.t('game_over.won', name: player.name)
+    when :lose then I18n.t('game_over.lose', name: player.name)
     end
   end
 

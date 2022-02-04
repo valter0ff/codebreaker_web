@@ -56,7 +56,6 @@ class App
 
   def select_route
     return render('game_over') if helper.status
-
     return render('game') if game
 
     render('menu')
@@ -72,12 +71,12 @@ class App
   end
 
   def handle_guess
-    @request.session[:number] = @request.params['number']
-    @request.session[:check] = game.check_user_guess
+    @request.session[:player_guess] = @request.params['number']
+    @request.session[:result_check] = game.check_user_guess
   end
 
   def set_status
-    @request.session[:status] = if helper.number == game.secret_code.join then :won
+    @request.session[:status] = if helper.player_guess == game.secret_code.join then :won
                                 elsif helper.attempts_left.zero? then :lose
                                 end
   end
