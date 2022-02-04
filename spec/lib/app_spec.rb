@@ -1,7 +1,6 @@
 RSpec.describe App do
   let(:app) { Rack::Builder.parse_file('config.ru').first }
   let(:game) { Codebreaker::Game.new }
-  let(:valid_name) { FFaker::Name.first_name }
   let(:valid_level) { Codebreaker::Player::DIFFICULTY_HASH.keys.first.to_s }
   let(:pathes) { App::PATHES }
 
@@ -85,6 +84,7 @@ RSpec.describe App do
   describe 'press start the game button' do
     let(:flash) { last_request.env['x-rack.flash'] }
     let(:player) { last_request.session[:game].player }
+    let(:valid_name) { FFaker::Name.first_name }
 
     context 'when player name is invalid' do
       let(:wrong_name) { FFaker::Name.first_name.slice(1, 2) }
@@ -147,8 +147,8 @@ RSpec.describe App do
         rand(Codebreaker::Validations::MIN_DIGIT..Codebreaker::Validations::MAX_DIGIT)
       end
     end
+    let(:valid_name) { FFaker::Name.first_name }
     let(:wrong_guess) { secret_code.map { |n| n < 6 ? n + 1 : n }.join }
-    let(:invalid_guess) { secret_code.join * rand(2..3) }
     let(:redirect_status) { 302 }
 
     before do
@@ -181,6 +181,8 @@ RSpec.describe App do
     end
 
     context 'when guess format is invalid' do
+      let(:invalid_guess) { secret_code.join * rand(2..3) }
+
       before { post pathes[:submit_answer], number: invalid_guess }
 
       it 'sets specific error to flash hash' do

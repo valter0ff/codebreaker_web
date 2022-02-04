@@ -11,7 +11,7 @@
         %th{scope: "col"}= I18n.t('stats.hints_left')
         %th.text-center{scope: "col"}= I18n.t('stats.date')
     %tbody
-      - statistics.each_with_index do |array, index|
+      - helper.statistics.each_with_index do |array, index|
         %tr
           %th{scope: "row"}= 1 + index
           %td= array[0].name
@@ -19,7 +19,7 @@
           %td.text-center #{array[0].attempts - array[0].attempts_used}/#{array[0].attempts}
           %td.text-center #{array[0].hints - array[0].hints_used}/#{array[0].hints}
           %td= I18n.l(array[1], format: "%Y.%m.%d - %R")
-      - if statistics.empty?
+      - if helper.statistics.empty?
         %tr
           %th{ scope: 'row', colspan: 6 }
             = I18n.t('stats.no_winners')
