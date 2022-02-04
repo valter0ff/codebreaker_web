@@ -125,6 +125,7 @@ RSpec.describe App do
     let(:secret_code) { [1, 2, 3, 4] }
     let(:wrong_guess) { '1121' }
     let(:invalid_guess) { '99999' }
+    let(:redirect_status) { 302 }
 
     before do
       game.create_game_params
@@ -175,11 +176,11 @@ RSpec.describe App do
       end
 
       it 'stores player`s input to session cookie' do
-        expect(last_request.session[:number]).to eq(wrong_guess)
+        expect(last_request.session[:player_guess]).to eq(wrong_guess)
       end
 
       it 'stores to session result of checking guess' do
-        expect(last_request.session[:check]).to eq(game.check_user_guess)
+        expect(last_request.session[:result_check]).to eq(game.check_user_guess)
       end
     end
 
@@ -196,7 +197,7 @@ RSpec.describe App do
       end
 
       it 'redirects to game_over page' do
-        expect(last_response.status).to eq(302)
+        expect(last_response.status).to eq(redirect_status)
       end
     end
 
@@ -211,7 +212,7 @@ RSpec.describe App do
       end
 
       it 'redirects to game_over page' do
-        expect(last_response.status).to eq(302)
+        expect(last_response.status).to eq(redirect_status)
       end
     end
   end
