@@ -1,17 +1,15 @@
 RSpec.describe Statistics do
   let(:file_path) { 'spec/fixtures/test.yml' }
-  let(:names) { %w[Walter Jessy Gustavo] }
+  let(:levels) { Statistics::LEVELS }
+  let(:players_count) { 20 }
+  let(:names) { Array.new(players_count) { FFaker::Name.first_name } }
   let(:fake_data) do
-    players = []
     names.map do |name|
-      3.times do |i|
-        player = Codebreaker::Player.new
-        player.name = name + i.to_s
-        player.get_difficulty(Statistics::LEVELS.slice(i))
-        players << [player, Time.now]
-      end
+      player = Codebreaker::Player.new
+      player.name = name
+      player.get_difficulty(levels.sample)
+      [player, Time.now]
     end
-    players
   end
 
   before do
@@ -25,13 +23,13 @@ RSpec.describe Statistics do
 
   context 'with hell level at first position' do
     it 'returns sorted data ' do
-      expect(described_class.show.first[0].name).to eql('Walter0')
+      expect(described_class.show.first[0].difficulty).to eq(levels.first)
     end
   end
 
   context 'with easy level at last position' do
     it 'returns sorted data' do
-      expect(described_class.show.last[0].name).to eql('Gustavo2')
+      expect(described_class.show.last[0].difficulty).to eq(levels.last)
     end
   end
 end

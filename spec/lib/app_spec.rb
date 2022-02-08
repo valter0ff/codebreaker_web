@@ -67,7 +67,7 @@ RSpec.describe App do
 
       it 'returns statistics page' do
         column_titles.each do |title|
-          get '/statistics'
+          get pathes[:statistics]
           expect(last_response.body).to include(title)
         end
       end
