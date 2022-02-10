@@ -1,0 +1,29 @@
+.row
+  .col.button
+    %button.btn.btn-primary{disabled: "disabled", type: "button"}
+      = I18n.t('base.level')
+      %span.badge.badge-light
+        = helper.game_level
+    %button.btn.btn-primary{disabled: "disabled", type: "button"}
+      = I18n.t('stats.attempts_left')
+      %span.badge.badge-light
+        #{helper.attempts_left}/#{game.player.attempts}
+    %button.btn.btn-primary{disabled: "disabled", type: "button"}
+      = I18n.t('stats.hints_left')
+      %span.badge.badge-light
+        #{helper.hints_left}/#{game.player.hints}
+%hr.mb-4
+.row
+  .text-center
+    .text-center
+      %h3.text-white
+        = helper.game_over_message
+      %h4.text-white
+        = I18n.t('base.code_was')
+        %strong= game.secret_code.join
+    %img.img-fluid{alt: I18n.t('game_over.status', status: helper.status), src: "assets/images/#{helper.status}.gif"}
+%hr.mb-4
+%a.btn.btn-primary.btn-lg{href: "/new_game", role: "button"}
+  = I18n.t('buttons.play_again')
+%a.btn.btn-success.btn-lg.float-right{href: "/statistics", role: "button"}
+  = I18n.t('buttons.statistics')

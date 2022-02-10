@@ -1,0 +1,20 @@
+!!!
+%html.mdl-js{lang: "en"}
+  %head
+    %meta{content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{content: "width=device-width, initial-scale=1, shrink-to-fit=no", name: "viewport"}/
+    %link{href: "../assets/favicon.ico", rel: "icon"}/
+    %link{ href: "../bootstrap-v4-rtl/dist/css/bootstrap.min.css", rel: "stylesheet" }/
+    %link{href: "../assets/css/styles.css", rel: "stylesheet"}/
+    %script{ src: "../jquery/dist/jquery.min.js" }
+    %script{src: "../bootstrap-v4-rtl/dist/js/bootstrap.min.js"}
+    %title= I18n.t('base.title')
+  %body
+    %section#introduction
+      .container
+        .row.fill-viewport.align-items-center.justify-content-center
+          .col-12.col-md-6
+            .row
+              .col-md-auto
+                %h1.text-white.title= I18n.t('base.title_now', time: Time.now.year)
+            = yield
