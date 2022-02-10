@@ -13,6 +13,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            gem install bundler:2.2.13
             bundle install
             yarn install
       - save_cache:
@@ -25,3 +26,8 @@ jobs:
       - run:
           name: Run fasterer
           command: bundle exec fasterer
+      - run:
+          name: Run tests
+          command: bundle exec rspec
+      - store_artifacts:
+          path: coverage

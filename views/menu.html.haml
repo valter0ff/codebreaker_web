@@ -2,7 +2,7 @@
   %p.lead.text-white-70
     = I18n.t('base.intro')
 %hr.mb-4/
-%form{action: "/start", method: "post"}
+%form{action: App::PATHES[:start], method: "post"}
   .form-group
     %label.lead.label{for: "player_name"}= I18n.t('menu.player_name')
     %input#player_name.form-control{autofocus: "",
@@ -20,7 +20,7 @@
   %button.btn.btn-primary.btn-lg{type: "submit"}
     = I18n.t('buttons.start_game')
   %span.float-right
-    %a.btn.btn-warning.btn-lg{href: "/rules", role: "button"}
+    %a.btn.btn-warning.btn-lg{href: App::PATHES[:rules], role: "button"}
       = I18n.t('buttons.rules')
-    %a.btn.btn-success.btn-lg{href: "/statistics", role: "button"}
+    %a.btn.btn-success.btn-lg{href: App::PATHES[:statistics], role: "button"}
       = I18n.t('buttons.statistics')
