@@ -1,0 +1,33 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@0.1.2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.2-node
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - codebreaker-web-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            gem install bundler:2.2.13
+            bundle install
+            yarn install
+      - save_cache:
+          key: codebreaker-web-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Run rubocop
+          command: bundle exec rubocop
+      - run:
+          name: Run fasterer
+          command: bundle exec fasterer
+      - run:
+          name: Run tests
+          command: bundle exec rspec
+      - store_artifacts:
+          path: coverage

@@ -1,0 +1,43 @@
+%p.lead.text-white-70
+  = I18n.t('base.hello', name: game.player.name)
+  = I18n.t('base.intro')
+%hr.mb-4
+.row
+  .col.button
+    %button.btn.btn-primary{disabled: true, type: "button"}
+      = I18n.t('base.level')
+      %span.badge.badge-light
+        = helper.game_level
+  .col.text-center.button
+    %button.btn.btn-primary{disabled: true, type: "button"}
+      = I18n.t('base.attempts')
+      %span.badge.badge-light
+        = helper.attempts_left
+  .col.button
+    %button.btn.btn-primary.float-right{disabled: (true if helper.hints_left.zero?), type: "button"}
+      = I18n.t('base.hints')
+      %span.badge.badge-light
+        = helper.hints_left
+%hr.mb-4/
+%strong.text-white-70= helper.flash.error
+%form{action: App::PATHES[:submit_answer], method: "post"}
+  .form-group
+    %input.form-control.guess_input{autocomplete: "off", name: "number",
+      pattern: "^[1-6]{4}$", placeholder: "#{ helper.player_guess || 1234}", required: ""}/
+  .form-group.guess_markers_list
+    #guess_marker
+    - 4.times do |i|
+      %button.btn.marks{disabled: "disabled", type: "button",
+      class: "#{helper.button_class(helper.result_check[i])}"} #{helper.result_check[i] || 'X'}
+  %hr.mb-4
+  .row
+    .col
+      %a.btn.btn-warning.btn-lg.float-right{role: "button", href: App::PATHES[:hint]}
+        #{helper.flash.notice || I18n.t('base.show_hint')}
+    .col.text-center
+      -helper.hints.each do |hint|
+        %button.btn.btn-warning.btn-lg{disabled: "disabled"}
+          = hint
+    .col
+      %button.btn.btn-primary.btn-lg{type: "submit"}
+        = I18n.t('buttons.submit')
