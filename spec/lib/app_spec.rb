@@ -1,7 +1,6 @@
 RSpec.describe App do
   let(:app) { Rack::Builder.parse_file('config.ru').first }
   let(:game) { Codebreaker::Game.new }
-  let(:valid_name) { FFaker::Name.first_name }
   let(:valid_level) { Codebreaker::Player::DIFFICULTY_HASH.keys.first.to_s }
   let(:pathes) { App::PATHES }
 
@@ -57,6 +56,23 @@ RSpec.describe App do
       end
     end
 
+    context 'when path /statistics' do
+      let(:column_titles) do
+        [I18n.t('stats.name'),
+         I18n.t('stats.level'),
+         I18n.t('stats.attempts_left'),
+         I18n.t('stats.hints_left'),
+         I18n.t('stats.date')]
+      end
+
+      it 'returns statistics page' do
+        column_titles.each do |title|
+          get pathes[:statistics]
+          expect(last_response.body).to include(title)
+        end
+      end
+    end
+
     context 'when path /rules' do
       it 'returns rules page' do
         get pathes[:rules]
@@ -68,6 +84,7 @@ RSpec.describe App do
   describe 'press start the game button' do
     let(:flash) { last_request.env['x-rack.flash'] }
     let(:player) { last_request.session[:game].player }
+    let(:valid_name) { FFaker::Name.first_name }
 
     context 'when player name is invalid' do
       let(:wrong_name) { FFaker::Name.first_name.slice(1, 2) }
@@ -130,8 +147,8 @@ RSpec.describe App do
         rand(Codebreaker::Validations::MIN_DIGIT..Codebreaker::Validations::MAX_DIGIT)
       end
     end
+    let(:valid_name) { FFaker::Name.first_name }
     let(:wrong_guess) { secret_code.map { |n| n < 6 ? n + 1 : n }.join }
-    let(:invalid_guess) { secret_code.join * rand(2..3) }
     let(:redirect_status) { 302 }
 
     before do
@@ -164,6 +181,8 @@ RSpec.describe App do
     end
 
     context 'when guess format is invalid' do
+      let(:invalid_guess) { secret_code.join * rand(2..3) }
+
       before { post pathes[:submit_answer], number: invalid_guess }
 
       it 'sets specific error to flash hash' do
@@ -211,10 +230,17 @@ RSpec.describe App do
     end
 
     context 'when player won' do
+      let(:file_path) { 'spec/fixtures/test.yml' }
+      let(:data) { YAML.load_stream(File.read(file_path)) }
+
       before do
+        stub_const('DatabaseLoader::DATA_FILE', file_path)
+        File.new(file_path, 'w')
         game.instance_variable_set(:@secret_code, secret_code)
         post pathes[:submit_answer], number: secret_code.join
       end
+
+      after { File.delete(file_path) }
 
       it 'store :won status to session' do
         expect(last_request.session[:status]).to eq(:won)
@@ -222,6 +248,10 @@ RSpec.describe App do
 
       it 'redirects to game_over page' do
         expect(last_response.status).to eq(redirect_status)
+      end
+
+      it 'store result of game to file' do
+        expect(data.flatten[0].name).to eq(game.player.name)
       end
     end
   end

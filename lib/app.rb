@@ -1,5 +1,7 @@
 class App
+  include DatabaseLoader
   include RenderEngine
+  include GameHelper
 
   PATHES = {
     root: '/',
@@ -8,15 +10,16 @@ class App
     new_game: '/new_game',
     submit_answer: '/submit_answer',
     hint: '/hint',
-    rules: '/rules'
+    rules: '/rules',
+    statistics: '/statistics'
   }.freeze
   PAGES = {
     menu: '/menu',
     game: '/game',
-    rules: '/rules',
     game_over: '/game_over',
     error404: '/404'
   }.freeze
+  STATIC_PAGES = ['/rules', '/statistics'].freeze
   ERROR_STATUS = 404
 
   attr_reader :helper
@@ -31,9 +34,10 @@ class App
   end
 
   def response
-    return load_path if PATHES.value?(@request.path)
+    return render(PAGES[:error404], ERROR_STATUS) unless PATHES.value?(@request.path)
+    return render(@request.path) if STATIC_PAGES.include?(@request.path)
 
-    render(PAGES[:error404], ERROR_STATUS)
+    load_path
   end
 
   def load_path
@@ -43,7 +47,6 @@ class App
     when PATHES[:new_game] then new_game
     when PATHES[:submit_answer] then submit_guess
     when PATHES[:hint] then take_hint
-    when PATHES[:rules] then render(PAGES[:rules])
     end
   end
 
@@ -58,8 +61,8 @@ class App
   end
 
   def setup_user_params(game_instance)
-    name = setup_game_data { game_instance.setup_name(@request.params['player_name']) }
-    level = setup_game_data { game_instance.setup_difficulty(@request.params['level']) }
+    name = setup_player_name(game_instance, @request.params['player_name'])
+    level = setup_difficulty_level(game_instance, @request.params['level'])
     name && level
   end
 
@@ -74,7 +77,7 @@ class App
 
     game_hint = game.give_hint
     game_hint ? helper.hints << game_hint : helper.flash.notice = I18n.t('flash.notice.no_hints')
-    redirect(PAGES[:game])
+    redirect(PATHES[:game])
   end
 
   def select_route
@@ -86,11 +89,12 @@ class App
 
   def submit_guess
     guess = @request.params['number']
-    return redirect(PAGES[:game]) unless @request.post? && setup_game_data { game.setup_user_guess(guess) }
+    return redirect(PATHES[:game]) unless @request.post? && setup_guess(game, guess)
 
     handle_guess
     set_status
-    redirect(PAGES[:game])
+    save_game if helper.status == :won
+    redirect(PATHES[:game])
   end
 
   def handle_guess
@@ -104,6 +108,10 @@ class App
                                 end
   end
 
+  def save_game
+    store_to_file([game.player, Time.now])
+  end
+
   def new_game
     @request.session.clear
     redirect(PATHES[:root])
@@ -111,12 +119,5 @@ class App
 
   def game
     @request.session[:game]
-  end
-
-  def setup_game_data
-    yield
-  rescue Codebreaker::ValidationError => e
-    helper.flash.error = e.message
-    false
   end
 end

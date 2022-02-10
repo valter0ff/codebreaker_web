@@ -57,4 +57,8 @@ class ViewHelper
     else 'btn-danger'
     end
   end
+
+  def statistics
+    Statistics.show
+  end
 end
