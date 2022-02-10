@@ -1,0 +1,13 @@
+.history
+db/db.yml
+spec/fixtures/*.yml
+coverage
+.DS_Store
+.idea
+.rspec_status
+/.yarn/*
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+yarn-error.log
+node_modules/

@@ -1,0 +1,14 @@
+{
+  "name": "codebreaker_web",
+  "version": "1.0.0",
+  "description": "codebreaker game",
+  "repository": "git@github.com:valter0ff/codebreaker_web.git",
+  "author": "Valerii Pohrebniak <km270985pvg@gmail.com>",
+  "license": "MIT",
+  "packageManager": "yarn@3.1.1",
+  "dependencies": {
+    "bootstrap-v4-rtl": "^4.6.0-3",
+    "jquery": "^3.6.0",
+    "popper.js": "^1.16.1"
+  }
+}
