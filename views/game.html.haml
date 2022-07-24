@@ -1,6 +1,8 @@
 %p.lead.text-white-70
   = I18n.t('base.hello', name: game.player.name)
-  = I18n.t('base.intro')
+  = I18n.t('base.intro', codesize: Codebreaker::Validations::CODE_SIZE,
+                         min_digit: Codebreaker::Validations::MIN_DIGIT,
+                         max_digit: Codebreaker::Validations::MAX_DIGIT)
 %hr.mb-4
 .row
   .col.button

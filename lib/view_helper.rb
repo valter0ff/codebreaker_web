@@ -63,4 +63,10 @@ class ViewHelper
   def statistics
     Statistics.show
   end
+
+  def game_rules
+    I18n.t('rules', codesize: Codebreaker::Validations::CODE_SIZE,
+                    min_digit: Codebreaker::Validations::MIN_DIGIT,
+                    max_digit: Codebreaker::Validations::MAX_DIGIT)
+  end
 end
