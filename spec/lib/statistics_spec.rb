@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Statistics do
   let(:file_path) { 'spec/fixtures/test.yml' }
   let(:levels) { Statistics::LEVELS }

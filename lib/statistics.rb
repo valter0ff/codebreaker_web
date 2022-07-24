@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Statistics
   extend DatabaseLoader
   LEVELS = Codebreaker::Player::DIFFICULTY_HASH.keys.map(&:to_s).reverse.freeze

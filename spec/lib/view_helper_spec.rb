@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe ViewHelper do
   let(:app) { Rack::Builder.parse_file('config.ru').first }
   let(:game) { Codebreaker::Game.new }

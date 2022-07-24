@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GameHelper
   def setup_game_data
     yield

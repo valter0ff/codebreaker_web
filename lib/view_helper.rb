@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ViewHelper
   def initialize(request)
     @request = request
