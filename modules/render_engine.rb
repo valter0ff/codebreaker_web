@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module RenderEngine
-  LAYOUT_PATH = '/layout'.freeze
+  LAYOUT_PATH = '/layout'
 
   def render(page, status = 200)
     Rack::Response.new(render_template(LAYOUT_PATH) { render_template(page) }, status)

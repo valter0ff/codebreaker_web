@@ -1,5 +1,5 @@
 GIT
-  remote: https://valter0ff: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@github.com/valter0ff/codebreaker_gem.git
+  remote: https://x-access-token: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@github.com/valter0ff/codebreaker_gem.git
   revision: f8558dfd302b6e8a33dd740a6b5c5bfb1e605f1b
   branch: feature/game
   specs:
@@ -113,4 +113,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-   2.2.13
+   2.3.18

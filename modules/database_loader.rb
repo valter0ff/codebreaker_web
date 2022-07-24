@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module DatabaseLoader
   DATA_FILE = File.expand_path('../db/db.yml', __dir__).freeze
-  DIR_NAME = 'db'.freeze
+  DIR_NAME = 'db'
 
   def load_from_file
     YAML.load_stream(File.read(DATA_FILE)) if File.exist?(DATA_FILE)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe App do
   let(:app) { Rack::Builder.parse_file('config.ru').first }
   let(:game) { Codebreaker::Game.new }
@@ -76,7 +78,7 @@ RSpec.describe App do
     context 'when path /rules' do
       it 'returns rules page' do
         get pathes[:rules]
-        expect(last_response.body).to include(I18n.t('rules').first)
+        expect(last_response.body).to include(I18n.t('rules').last)
       end
     end
   end
